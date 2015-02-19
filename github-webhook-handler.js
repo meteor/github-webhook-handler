@@ -10,11 +10,7 @@ function signBlob (key, blob) {
 
 
 function create (options) {
-  if (typeof options != 'object')
-    throw new TypeError('must provide an options object')
-
-  if (typeof options.path != 'string')
-    throw new TypeError('must provide a \'path\' option')
+  options = options || {};
 
   // make it an EventEmitter, sort of
   handler.__proto__ = EventEmitter.prototype
@@ -24,7 +20,7 @@ function create (options) {
 
 
   function handler (req, res, callback) {
-    if (req.url.split('?').shift() !== options.path)
+    if (options.path && req.url.split('?').shift() !== options.path)
       return callback()
 
     function hasError (msg) {
@@ -34,7 +30,7 @@ function create (options) {
       var err = new Error(msg)
 
       handler.emit('error', err, req)
-      callback(err)
+      callback && callback(err)
     }
 
     var sig   = req.headers['x-hub-signature']
