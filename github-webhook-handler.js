@@ -16,9 +16,6 @@ function create (options) {
   if (typeof options.path != 'string')
     throw new TypeError('must provide a \'path\' option')
 
-  if (typeof options.secret != 'string')
-    throw new TypeError('must provide a \'secret\' option')
-
   // make it an EventEmitter, sort of
   handler.__proto__ = EventEmitter.prototype
   EventEmitter.call(handler)
@@ -60,7 +57,7 @@ function create (options) {
 
       var obj
 
-      if (sig !== signBlob(options.secret, data))
+      if (options.secret && sig !== signBlob(options.secret, data))
         return hasError('X-Hub-Signature does not match blob signature')
 
       try {
